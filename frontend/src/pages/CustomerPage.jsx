@@ -56,6 +56,7 @@ export default function CustomerPage() {
   async function handlePlaceOrder() {
     if (!cart.length) return;
     setPlacing(true);
+    setError('');
     try {
       // Group by restaurant — place one order per restaurant for simplicity
       const restName = cart[0].restaurant.name;
