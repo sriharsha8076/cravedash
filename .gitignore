@@ -33,3 +33,5 @@ maven.zip
 # Environment & logs
 .env.local
 *.log
+*.rdb
+dump.rdb

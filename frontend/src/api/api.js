@@ -11,8 +11,11 @@ const api = axios.create({
 });
 
 // ── Orders ──────────────────────────────────────────────────
-export const getOrders = () =>
-  api.get('/orders').then((r) => r.data);
+/**
+ * @param {string|null} restaurant  Optional restaurant name filter (partner view).
+ */
+export const getOrders = (restaurant = null) =>
+  api.get('/orders', { params: restaurant ? { restaurant } : {} }).then((r) => r.data);
 
 export const getOrder = (id) =>
   api.get(`/orders/${id}`).then((r) => r.data);
@@ -34,3 +37,14 @@ export const getLeaderboard = (limit = 5) =>
 // ── Health ──────────────────────────────────────────────────
 export const getHealth = () =>
   api.get('/health').then((r) => r.data);
+
+// ── Restaurants ─────────────────────────────────────────────
+export const getRestaurants = () =>
+  api.get('/restaurants').then((r) => r.data);
+
+export const getRestaurant = (id) =>
+  api.get(`/restaurants/${id}`).then((r) => r.data);
+
+// ── Analytics ───────────────────────────────────────────────
+export const getAnalytics = () =>
+  api.get('/analytics/summary').then((r) => r.data);

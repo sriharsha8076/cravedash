@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { createOrder } from '../api/api';
 
 const INITIAL_FORM = { customer: '', restaurant: '', amount: '' };
@@ -63,7 +64,7 @@ export default function CreateOrderModal({ onClose, onCreated }) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
   }
 
-  return (
+  return createPortal(
     <div
       className="modal-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -140,6 +141,7 @@ export default function CreateOrderModal({ onClose, onCreated }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

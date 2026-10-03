@@ -19,10 +19,21 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    /** GET /api/orders — list all orders, newest first */
+    /**
+     * GET /api/orders — list all orders, newest first.
+     * Optional: ?restaurant=Biryani+House to filter by restaurant name (for partner view).
+     */
     @GetMapping
-    public List<Order> listOrders() {
-        return orderService.listOrders();
+    public List<Order> listOrders(
+            @RequestParam(name = "restaurant", required = false) String restaurant) {
+        List<Order> orders = orderService.listOrders();
+        if (restaurant != null && !restaurant.isBlank()) {
+            String filter = restaurant.trim();
+            return orders.stream()
+                    .filter(o -> o.getRestaurant().equalsIgnoreCase(filter))
+                    .toList();
+        }
+        return orders;
     }
 
     /** POST /api/orders — create an order */
