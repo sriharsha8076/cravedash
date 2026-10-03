@@ -1,0 +1,26 @@
+# Local development profile — uses a plain Valkey/Redis Docker container.
+# Start with:  docker run -p 6379:6379 valkey/valkey:7.2
+#
+# TLS is disabled because the local container does not have a certificate.
+# All other code paths are identical to production.
+#
+# Usage:  SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
+#         (set env vars below or export them in your shell)
+
+spring:
+  data:
+    redis:
+      host: ${MEMORYDB_ENDPOINT:localhost}
+      port: ${MEMORYDB_PORT:6379}
+      username: ${MEMORYDB_USERNAME:}
+      password: ${MEMORYDB_PASSWORD:}
+      ssl:
+        enabled: false   # <-- TLS off for local Docker container
+
+app:
+  allowed-origin: ${ALLOWED_ORIGIN:http://localhost:5173}
+
+logging:
+  level:
+    com.cravedash: DEBUG
+    io.lettuce: INFO

@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: cravedash-backend
+
+  # Redis / Lettuce cluster configuration.
+  # Real values are injected via env vars at runtime; these are placeholders
+  # so the app fails fast with a clear message if env is not set.
+  data:
+    redis:
+      # Spring Boot auto-configuration picks up RedisClusterConfiguration
+      # when spring.data.redis.cluster.nodes is set (done programmatically
+      # in RedisConfig.java so we can pass TLS options).  The properties
+      # below are still used by Actuator's RedisHealthIndicator.
+      host: ${MEMORYDB_ENDPOINT}
+      port: ${MEMORYDB_PORT:6379}
+      username: ${MEMORYDB_USERNAME}
+      password: ${MEMORYDB_PASSWORD}
+      ssl:
+        enabled: true
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 2
+
+server:
+  port: 8080
+
+# CORS – override ALLOWED_ORIGIN env var for your CloudFront / local address
+app:
+  allowed-origin: ${ALLOWED_ORIGIN:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.cravedash: INFO
+    io.lettuce: WARN

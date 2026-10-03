@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://54.237.186.49:8080/api/:path*"
+    }
+  ]
+}
