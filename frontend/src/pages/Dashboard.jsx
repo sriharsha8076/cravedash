@@ -1,9 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getStats, getOrders, getLeaderboard } from '../api/api';
+import { useAuth } from '../context/AuthContext';
 import StatusBadge from '../components/StatusBadge';
 
+/** Mini sparkline bar (pure CSS) */
+function MiniBar({ value, max, color }) {
+  const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+  return (
+    <div className="stat-mini-bar-track">
+      <div
+        className="stat-mini-bar-fill"
+        style={{ width: `${pct}%`, background: color }}
+      />
+    </div>
+  );
+}
+
 export default function Dashboard() {
+  const { auth } = useAuth();
   const [stats, setStats]             = useState(null);
   const [orders, setOrders]           = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -32,32 +47,94 @@ export default function Dashboard() {
     load();
   }, []);
 
-  const delivered = stats ? stats.totalOrders - stats.activeOrders : null;
+  const delivered    = stats ? stats.totalOrders - stats.activeOrders : null;
+  const deliveryRate = stats && stats.totalOrders > 0
+    ? Math.round((delivered / stats.totalOrders) * 100)
+    : null;
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   return (
     <main className="page">
-      <h1>Dashboard</h1>
-      <p className="page-subtitle">Real-time order management · Amazon MemoryDB (Redis)</p>
+
+      {/* ── Hero banner ── */}
+      <div className="dashboard-hero">
+        <div className="dashboard-hero-left">
+          <div className="dashboard-hero-greeting">{greeting}, {auth?.name || 'Admin'} 👋</div>
+          <h1 className="dashboard-hero-title">Operations Dashboard</h1>
+          <p className="dashboard-hero-sub">
+            Real-time order management · powered by{' '}
+            <span className="dashboard-hero-highlight">Amazon MemoryDB for Redis</span>
+          </p>
+        </div>
+        <div className="dashboard-hero-actions">
+          <Link to="/orders" id="dash-new-order" className="btn btn-primary">
+            ＋ New Order
+          </Link>
+          <Link to="/analytics" className="btn btn-secondary">
+            📈 Analytics
+          </Link>
+        </div>
+      </div>
 
       {error && <p className="msg-error" style={{ marginBottom: 24 }}>{error}</p>}
 
       {/* ── Stat cards ── */}
-      <div className="stat-grid">
-        <div className="stat-card">
+      <div className="stat-grid stat-grid-4">
+
+        <div className="stat-card stat-card-blue">
+          <div className="stat-card-accent-bar" />
           <div className="stat-icon">📦</div>
           <div className="label">Total Orders</div>
           <div className="value">{loading ? '—' : (stats?.totalOrders ?? '—')}</div>
+          {!loading && stats && (
+            <MiniBar value={stats.totalOrders} max={Math.max(stats.totalOrders, 1)} color="var(--blue)" />
+          )}
+          <div className="stat-card-footer">All time</div>
         </div>
-        <div className="stat-card">
+
+        <div className="stat-card stat-card-orange">
+          <div className="stat-card-accent-bar" />
           <div className="stat-icon">🔥</div>
           <div className="label">Active Orders</div>
           <div className="value">{loading ? '—' : (stats?.activeOrders ?? '—')}</div>
+          {!loading && stats && (
+            <MiniBar value={stats.activeOrders} max={Math.max(stats.totalOrders, 1)} color="var(--orange)" />
+          )}
+          <div className="stat-card-footer">In progress</div>
         </div>
-        <div className="stat-card">
+
+        <div className="stat-card stat-card-green">
+          <div className="stat-card-accent-bar" />
           <div className="stat-icon">✅</div>
           <div className="label">Delivered</div>
           <div className="value">{loading ? '—' : (delivered ?? '—')}</div>
+          {!loading && stats && (
+            <MiniBar value={delivered} max={Math.max(stats.totalOrders, 1)} color="var(--green)" />
+          )}
+          <div className="stat-card-footer">Completed</div>
         </div>
+
+        <div className="stat-card stat-card-purple">
+          <div className="stat-card-accent-bar" />
+          <div className="stat-icon">🎯</div>
+          <div className="label">Delivery Rate</div>
+          <div className="value">{loading ? '—' : (deliveryRate !== null ? `${deliveryRate}%` : '—')}</div>
+          {!loading && stats && (
+            <MiniBar value={deliveryRate ?? 0} max={100} color="var(--purple)" />
+          )}
+          <div className="stat-card-footer">Success ratio</div>
+        </div>
+
+      </div>
+
+      {/* ── Quick-action chips ── */}
+      <div className="dashboard-quick-links">
+        <Link to="/orders"      className="quick-chip"><span>📦</span> All Orders</Link>
+        <Link to="/analytics"   className="quick-chip"><span>📈</span> Analytics</Link>
+        <Link to="/leaderboard" className="quick-chip"><span>🏆</span> Leaderboard</Link>
+        <Link to="/memorydb"    className="quick-chip"><span>🧠</span> MemoryDB Hub</Link>
       </div>
 
       {/* ── Recent orders ── */}

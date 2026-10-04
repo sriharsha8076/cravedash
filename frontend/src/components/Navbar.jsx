@@ -42,15 +42,18 @@ export default function Navbar() {
     customer: [
       { to: '/menu',         label: '🍽️ Menu' },
       { to: '/leaderboard',  label: '🏆 Leaderboard' },
+      { to: '/memorydb',     label: '🧠 MemoryDB' },
     ],
     restaurant: [
       { to: '/partner',      label: '📋 My Orders' },
+      { to: '/memorydb',     label: '🧠 MemoryDB' },
     ],
     admin: [
       { to: '/',             label: '📊 Dashboard',    end: true },
       { to: '/orders',       label: '📦 Orders' },
       { to: '/analytics',    label: '📈 Analytics' },
       { to: '/leaderboard',  label: '🏆 Leaderboard' },
+      { to: '/memorydb',     label: '🧠 MemoryDB' },
     ],
   };
 

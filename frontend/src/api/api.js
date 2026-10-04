@@ -48,3 +48,14 @@ export const getRestaurant = (id) =>
 // ── Analytics ───────────────────────────────────────────────
 export const getAnalytics = () =>
   api.get('/analytics/summary').then((r) => r.data);
+
+// ── MemoryDB Inspector ───────────────────────────────────────
+export const getMemoryDbInspect = () =>
+  api.get('/memorydb/inspect').then((r) => r.data);
+
+export const getMemoryDbBenchmark = () =>
+  api.get('/memorydb/benchmark').then((r) => r.data);
+
+export const getMemoryDbInfo = () =>
+  api.get('/memorydb/info').then((r) => r.data);
+

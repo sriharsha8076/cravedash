@@ -84,10 +84,19 @@ export default function AnalyticsPage() {
       .catch(() => { setError('Failed to load analytics. Is the backend running?'); setLoading(false); });
   }, []);
 
+  const deliveryRate = data && data.totalOrders > 0
+    ? Math.round(((data.totalOrders - (data.ordersByStatus?.PLACED ?? 0) - (data.ordersByStatus?.ACCEPTED ?? 0) - (data.ordersByStatus?.PREPARING ?? 0) - (data.ordersByStatus?.OUT_FOR_DELIVERY ?? 0)) / data.totalOrders) * 100)
+    : null;
+
   return (
     <main className="page">
-      <h1>📊 Analytics</h1>
-      <p className="page-subtitle">Real-time insights from Amazon MemoryDB · Last 7 days</p>
+      {/* Hero */}
+      <div className="analytics-hero">
+        <div>
+          <h1>📊 Analytics</h1>
+          <p className="page-subtitle">Real-time insights from Amazon MemoryDB · Last 7 days</p>
+        </div>
+      </div>
 
       {error && <p className="msg-error" style={{ marginBottom: 24 }}>{error}</p>}
 
@@ -96,21 +105,34 @@ export default function AnalyticsPage() {
       ) : (
         <>
           {/* KPI row */}
-          <div className="stat-grid analytics-kpi-grid">
-            <div className="stat-card">
+          <div className="stat-grid stat-grid-4 analytics-kpi-grid">
+            <div className="stat-card stat-card-orange">
+              <div className="stat-card-accent-bar" />
               <div className="stat-icon">💰</div>
               <div className="label">Total Revenue</div>
               <div className="value">₹{Number(data?.totalRevenue || 0).toLocaleString()}</div>
+              <div className="stat-card-footer">All orders</div>
             </div>
-            <div className="stat-card">
+            <div className="stat-card stat-card-blue">
+              <div className="stat-card-accent-bar" />
               <div className="stat-icon">📦</div>
               <div className="label">Total Orders</div>
               <div className="value">{data?.totalOrders ?? 0}</div>
+              <div className="stat-card-footer">Placed so far</div>
             </div>
-            <div className="stat-card">
+            <div className="stat-card stat-card-purple">
+              <div className="stat-card-accent-bar" />
               <div className="stat-icon">💳</div>
               <div className="label">Avg Order Value</div>
               <div className="value">₹{Number(data?.avgOrderValue || 0).toLocaleString()}</div>
+              <div className="stat-card-footer">Per order</div>
+            </div>
+            <div className="stat-card stat-card-green">
+              <div className="stat-card-accent-bar" />
+              <div className="stat-icon">🎯</div>
+              <div className="label">Delivery Rate</div>
+              <div className="value">{deliveryRate !== null ? `${deliveryRate}%` : '—'}</div>
+              <div className="stat-card-footer">Orders delivered</div>
             </div>
           </div>
 

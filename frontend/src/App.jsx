@@ -12,6 +12,7 @@ import CustomerPage    from './pages/CustomerPage';
 import RestaurantPage  from './pages/RestaurantPage';
 import LiveTrackerPage from './pages/LiveTrackerPage';
 import AnalyticsPage   from './pages/AnalyticsPage';
+import MemoryDbHub     from './pages/MemoryDbHub';
 
 /**
  * Redirects to /login if not authenticated.
@@ -108,6 +109,11 @@ export default function App() {
         <Route path="/leaderboard" element={
           <ProtectedRoute allowedRoles={['admin', 'customer']}>
             <Leaderboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/memorydb" element={
+          <ProtectedRoute allowedRoles={['admin', 'customer', 'restaurant']}>
+            <MemoryDbHub />
           </ProtectedRoute>
         } />
 
